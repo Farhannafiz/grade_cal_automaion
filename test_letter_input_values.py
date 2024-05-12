@@ -50,13 +50,30 @@ def test_add_and_reset_rows(driver, task, grade, weight):
     # Add assertions here to check for the expected outcomes or states
 
 def test_invalid_input_data(driver):
-    """Test handling of invalid input data."""
-    add_row(driver, "123", "Invalid Grade", "abc")  # Intentionally incorrect data types
-    try:
-        WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "error-message"))
-        )
-        error_messages = driver.find_elements(By.CLASS_NAME, "error-message")
-        assert any(msg.is_displayed() for msg in error_messages), "Expected at least one error message."
-    except TimeoutException:
-        pytest.fail("Expected error messages did not appear for invalid inputs.")
+    """Test if the input field prevents invalid data from being accepted."""
+    invalid_task = "123416283182"
+    invalid_grade = "Invalid Grade"
+    invalid_weight = "akjsdhkjashdkj"
+
+    # Add row with invalid data
+    add_row(driver, invalid_task, invalid_grade, invalid_weight)
+
+    # Find the input fields again to verify their content
+    inputs = driver.find_elements(By.TAG_NAME, "input")
+
+    # Adjust the indices based on the actual layout of your form
+    task_input = inputs[0]
+    grade_input = inputs[1]
+    weight_input = inputs[2]
+
+    # Check if any field still holds the invalid values
+    is_invalid_task_retained = task_input.get_attribute("value") == invalid_task
+    is_invalid_grade_retained = grade_input.get_attribute("value") == invalid_grade
+    is_invalid_weight_retained = weight_input.get_attribute("value") == invalid_weight
+
+    # Test should pass only if none of the invalid inputs are retained
+    if is_invalid_task_retained or is_invalid_grade_retained or is_invalid_weight_retained:
+        pytest.fail("Input fields are retaining invalid values.")
+    else:
+        print("Test passed: Input fields did not retain invalid values.")
+
