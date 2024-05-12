@@ -76,4 +76,3 @@ def test_invalid_input_data(driver):
         pytest.fail("Input fields are retaining invalid values.")
     else:
         print("Test passed: Input fields did not retain invalid values.")
-
