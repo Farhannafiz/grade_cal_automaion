@@ -288,4 +288,3 @@ def adjust_weight(self, row_index, increase=True, clicks=1):
     except Exception as e:
         self.driver.save_screenshot("adjust_weight_error.png")
         raise
-
